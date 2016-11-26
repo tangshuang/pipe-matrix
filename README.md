@@ -53,6 +53,17 @@ In the function, you **must** run a `next()`, or next then callback function wil
 
 `next` is an alias of `$matrix`, so you can use `$matrix.next()` anywhere.
 
+Not like `pipe-queue`, pipe-matrix does not provide a `concat` function. If you want to run more than one queue in a then callback function, just use `.when()` to realize:
+
+```
+var $matrix = new PipeMatrix();
+var $matrix.when(...).then(function(next){
+	$matrix.when(...queues).end(next);
+}).then...
+```
+
+So, `PipeMatrix.when` to queue is almost like `pipe-concat` to stream.
+
 #### .end(function)
 
 In this function, you can put code which you want to run after all queues finished.

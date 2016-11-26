@@ -5,8 +5,30 @@ var done;
 export default class PipeMatrix {
 	constructor() {
 	}
-	when(queue) {
-		queue.end(this.next.bind(this));
+	when(argument,...queues) {
+		// if the first argument is function
+		if(typeof argument === 'function') {
+			var factory = argument;
+			factory(this.next.bind(this),concat);
+			return this;
+		}
+
+		// if the arguments are all streams
+		var queues = [argument,...queues];
+		var length = queues.length;
+		var counter = 0;
+		var self = this;
+
+		function callback() {
+			counter ++;
+			if(counter >= length) {
+				self.next();
+			}
+		}
+
+		queues.forEach(queue => {
+			queue.end(callback);
+		});
 
 		return this;
 	}
